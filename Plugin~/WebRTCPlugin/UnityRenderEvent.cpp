@@ -29,6 +29,10 @@ namespace webrtc
     IUnityInterfaces* s_UnityInterfaces = nullptr;
     IUnityGraphics* s_Graphics = nullptr;
     Context* s_context = nullptr;
+
+    DelegateNativeYUVCallback OnYUVFrameInternal;
+    void* SyncContext = nullptr;
+
     std::map<const MediaStreamTrackInterface*, std::unique_ptr<IEncoder>> s_mapEncoder;
     std::unique_ptr <Clock> s_clock;
 
@@ -295,7 +299,7 @@ static void UNITY_INTERFACE_API TextureUpdateCallback(int eventID, void* data)
         }
         {
             ScopedProfiler profiler(*s_MarkerDecode);
-            renderer->ConvertVideoFrameToTextureAndWriteToBuffer(params->width, params->height, ConvertTextureFormat(params->format));
+            renderer->ConvertVideoFrameToTextureAndWriteToBuffer(params->width, params->height, ConvertTextureFormat(params->format), OnYUVFrameInternal, SyncContext);
         }
         params->texData = renderer->tempBuffer.data();
     }
@@ -304,5 +308,12 @@ static void UNITY_INTERFACE_API TextureUpdateCallback(int eventID, void* data)
 extern "C" UnityRenderingEventAndData UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API GetUpdateTextureFunc(Context* context)
 {
     s_context = context;
-    return TextureUpdateCallback;
+    return TextureUpdateCallback;   
+}
+
+
+extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API RegisterYUVCallback(void* Ptr, DelegateNativeYUVCallback OnYUVFrame)
+{
+    OnYUVFrameInternal = OnYUVFrame;
+    SyncContext = Ptr;
 }

@@ -45,8 +45,13 @@ endif()
 
 # enable debug output 
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_FLAGS_DEBUG "-g3 -O0 -D_DEBUG")
+if(Windows)
+  set(CMAKE_CXX_FLAGS_DEBUG "-g3 -O0 -D_DEBUG")
+endif()
 
+if(Linux)
+  set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -D_DEBUG")
+endif()
 # set iterator debug level
 if(Windows)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_ITERATOR_DEBUG_LEVEL=0 /Zi /Od")

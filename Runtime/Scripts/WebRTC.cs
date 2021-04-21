@@ -74,7 +74,7 @@ namespace Unity.WebRTC
         Failed = 4,
         Disconnected = 5,
         Closed = 6,
-        Max =7
+        Max = 7
     }
 
     /// <summary>
@@ -325,7 +325,7 @@ namespace Unity.WebRTC
 #if UNITY_IOS && !UNITY_EDITOR
             NativeMethods.RegisterRenderingWebRTCPlugin();
 #endif
-            s_context = Context.Create(encoderType:type);
+            s_context = Context.Create(encoderType: type);
             NativeMethods.SetCurrentContext(s_context.self);
             s_syncContext = SynchronizationContext.Current;
             var flipShader = Resources.Load<Shader>("Flip");
@@ -341,7 +341,7 @@ namespace Unity.WebRTC
                 // Wait until all frame rendering is done
                 yield return new WaitForEndOfFrame();
                 {
-                    foreach(var track in VideoStreamTrack.tracks)
+                    foreach (var track in VideoStreamTrack.tracks)
                     {
                         if (track.IsEncoderInitialized)
                         {
@@ -391,7 +391,8 @@ namespace Unity.WebRTC
         static void SendOrPostCallback(object state)
         {
             var obj = state as CallbackObject;
-            if (s_context == null || !Table.ContainsKey(obj.ptr)) {
+            if (s_context == null || !Table.ContainsKey(obj.ptr))
+            {
                 return;
             }
             obj.callback();
@@ -524,7 +525,14 @@ namespace Unity.WebRTC
                 return null;
             }
         }
+        public static void RegisterYUVCallback(DelegateNativeYUVCallback OnYUVFrame)
+        {
+            NativeMethods.RegisterYUVCallback(OnYUVFrame);
+        }
+
     }
+
+
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal delegate void DelegateDebugLog([MarshalAs(UnmanagedType.LPStr)] string str);
@@ -565,6 +573,9 @@ namespace Unity.WebRTC
     internal delegate void DelegateNativeMediaStreamOnAddTrack(IntPtr stream, IntPtr track);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal delegate void DelegateNativeMediaStreamOnRemoveTrack(IntPtr stream, IntPtr track);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void DelegateNativeYUVCallback([MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] byte[] bytes, int Size, int FrameId);
 
     internal static class NativeMethods
     {
@@ -754,7 +765,7 @@ namespace Unity.WebRTC
         [DllImport(WebRTC.Lib)]
         public static extern RTCDataChannelState DataChannelGetReadyState(IntPtr ptr);
         [DllImport(WebRTC.Lib)]
-        public static extern void DataChannelSend(IntPtr ptr, [MarshalAs(UnmanagedType.LPStr)]string msg);
+        public static extern void DataChannelSend(IntPtr ptr, [MarshalAs(UnmanagedType.LPStr)] string msg);
         [DllImport(WebRTC.Lib)]
         public static extern void DataChannelSendBinary(IntPtr ptr, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] byte[] bytes, int size);
         [DllImport(WebRTC.Lib)]
@@ -864,6 +875,9 @@ namespace Unity.WebRTC
         public static extern IntPtr StatsMemberGetDoubleArray(IntPtr member, out ulong length);
         [DllImport(WebRTC.Lib)]
         public static extern IntPtr StatsMemberGetStringArray(IntPtr member, out ulong length);
+
+        [DllImport(WebRTC.Lib)]
+        public static extern void RegisterYUVCallback(DelegateNativeYUVCallback OnYUVFrame);
     }
 
     internal static class VideoEncoderMethods

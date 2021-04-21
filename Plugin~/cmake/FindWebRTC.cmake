@@ -1,7 +1,11 @@
 # Find WebRTC include path
+if(Linux)
+  set(WEBRTC_DIR "${CMAKE_SOURCE_DIR}/webrtc-linux")
+endif()
 
-set(WEBRTC_DIR "${CMAKE_SOURCE_DIR}/webrtc")
-
+if(Windows)
+  set(WEBRTC_DIR "${CMAKE_SOURCE_DIR}/webrtc-win")
+endif()
 set(WEBRTC_INCLUDE_DIR
   ${WEBRTC_DIR}/include
   ${WEBRTC_DIR}/include/third_party/abseil-cpp

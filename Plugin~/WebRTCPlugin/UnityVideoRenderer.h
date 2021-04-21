@@ -3,7 +3,7 @@
 #include "api/video/video_frame.h"
 #include "api/video/video_sink_interface.h"
 #include "third_party/libyuv/include/libyuv.h"
-
+#include  "WebRTCPlugin.h"
 namespace unity {
 namespace webrtc {
 
@@ -21,11 +21,13 @@ namespace webrtc {
         void SetFrameBuffer(rtc::scoped_refptr<webrtc::VideoFrameBuffer> buffer);
         std::vector<uint8_t> tempBuffer;
 
-        void ConvertVideoFrameToTextureAndWriteToBuffer(int width, int height, webrtc::VideoType format);
+        void ConvertVideoFrameToTextureAndWriteToBuffer(int width, int height, webrtc::VideoType format, DelegateNativeYUVCallback OnYUVFrame = nullptr,void* SyncContext= nullptr);
 
     private:
         uint32_t m_id;
         std::mutex m_mutex;
+        std::mutex frameId_mutex;
+        int currentFrameId = 0;
         rtc::scoped_refptr<webrtc::VideoFrameBuffer> m_frameBuffer;
     };
 

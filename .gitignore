@@ -385,5 +385,9 @@ Runtime/Plugins/x86_64/*.ilk.meta
 Runtime/Plugins/x86_64/*.pdb.meta
 
 
+Plugin~/build-win
+Plugin~/build-linux
 
 
+Plugin~/webrtc-linux
+Plugin~/webrtc-win
