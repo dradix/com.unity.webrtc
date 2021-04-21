@@ -44,6 +44,8 @@ namespace Unity.WebRTC
     /// <param name="error"></param>
     public delegate void DelegateSetSessionDescFailure(RTCError error);
 
+    public delegate void DelegateOnYuvFrameExternal(byte[] Data, int Size, int FrameId);
+
     /// <summary>
     /// Represents a WebRTC connection between the local peer and remote peer.
     /// </summary>
@@ -263,6 +265,8 @@ namespace Unity.WebRTC
         /// </summary>
         public DelegateOnNegotiationNeeded OnNegotiationNeeded { get; set; }
 
+        public  DelegateOnYuvFrameExternal  OnYuvFrameExternal { get; set; }
+
         /// <summary>
         ///
         /// </summary>
@@ -281,6 +285,22 @@ namespace Unity.WebRTC
         internal DelegateSetSessionDescSuccess OnSetSessionDescriptionSuccess { get; set; }
 
         internal DelegateSetSessionDescFailure OnSetSessionDescriptionFailure { get; set; }
+
+
+        [AOT.MonoPInvokeCallback(typeof(DelegateNativeYUVCallback))]
+        public static void OnYuvFrameCallbackGrabber(IntPtr ptr, byte[] bytes, int Size, int FrameId)
+        {
+            WebRTC.Sync(ptr, () =>
+            {
+                if (WebRTC.Table[ptr] is RTCPeerConnection connection)
+                {
+                    
+
+                    connection.OnYuvFrameExternal?.Invoke(bytes, Size, FrameId);
+                }
+            });
+        }
+
 
         [AOT.MonoPInvokeCallback(typeof(DelegateNativeOnIceCandidate))]
         static void PCOnIceCandidate(IntPtr ptr, string sdp, string sdpMid, int sdpMlineIndex)
@@ -483,6 +503,9 @@ namespace Unity.WebRTC
                 self, OnSetSessionDescSuccess);
             WebRTC.Context.PeerConnectionRegisterOnSetSessionDescFailure(
                 self, OnSetSessionDescFailure);
+            NativeMethods.RegisterYUVCallback(self,OnYuvFrameCallbackGrabber);
+            //Initialize Callback
+            
         }
 
         /// <summary>
@@ -869,3 +892,4 @@ namespace Unity.WebRTC
         }
     }
 }
+

@@ -333,7 +333,13 @@ namespace Unity.WebRTC
             {
                 flipMat = new Material(flipShader);
             }
+
+       
         }
+
+
+       
+   
         public static IEnumerator Update()
         {
             while (true)
@@ -525,10 +531,7 @@ namespace Unity.WebRTC
                 return null;
             }
         }
-        public static void RegisterYUVCallback(DelegateNativeYUVCallback OnYUVFrame)
-        {
-            NativeMethods.RegisterYUVCallback(OnYUVFrame);
-        }
+      
 
     }
 
@@ -575,7 +578,7 @@ namespace Unity.WebRTC
     internal delegate void DelegateNativeMediaStreamOnRemoveTrack(IntPtr stream, IntPtr track);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void DelegateNativeYUVCallback([MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] byte[] bytes, int Size, int FrameId);
+    public delegate void DelegateNativeYUVCallback(IntPtr ptr, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] byte[] bytes, int Size, int FrameId);
 
     internal static class NativeMethods
     {
@@ -877,7 +880,7 @@ namespace Unity.WebRTC
         public static extern IntPtr StatsMemberGetStringArray(IntPtr member, out ulong length);
 
         [DllImport(WebRTC.Lib)]
-        public static extern void RegisterYUVCallback(DelegateNativeYUVCallback OnYUVFrame);
+        public static extern void RegisterYUVCallback(IntPtr ptr, DelegateNativeYUVCallback OnYUVFrame);
     }
 
     internal static class VideoEncoderMethods
