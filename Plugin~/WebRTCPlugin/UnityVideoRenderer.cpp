@@ -1,4 +1,5 @@
 #include "pch.h"
+
 #include "UnityVideoRenderer.h"
 
 namespace unity {
@@ -11,10 +12,15 @@ namespace unity {
             //Allocate memory for  image buffer is Y = width*height, U = Y/4, V= Y/4
             //TODO: Check overflow of Buffers
             int YSize = width * height;
-
+/*
             memcpy_s(Destination, YSize * 3 / 2, YBuffer, YSize);
             memcpy_s(&Destination[YSize], YSize / 2, UBuffer, YSize / 4);
             memcpy_s(&Destination[YSize + YSize / 4], YSize / 4, VBuffer, YSize / 4);
+            */
+
+            memcpy(Destination, YBuffer, YSize);
+            memcpy(&Destination[YSize],  UBuffer, YSize / 4);
+            memcpy(&Destination[YSize + YSize / 4], VBuffer, YSize / 4);
         }
         UnityVideoRenderer::UnityVideoRenderer(uint32_t id) : m_id(id)
         {
@@ -111,6 +117,12 @@ namespace unity {
                 else
                 {
                     (*OnYUVFrame)(SyncContext, Destination, width * height * 3 / 2, currentFrameId);
+                 
+                    if (Destination != nullptr)
+                    {
+                        delete[] Destination;
+
+                    }
                 }
             }
 

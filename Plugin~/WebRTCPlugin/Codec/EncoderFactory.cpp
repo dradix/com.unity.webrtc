@@ -82,7 +82,7 @@ namespace webrtc
 #endif
 #if defined(SUPPORT_OPENGL_CORE)
             case GRAPHICS_DEVICE_OPENGL: {
-                encoder = std::make_unique<NvEncoderGL>(width, height, device, textureFormat);
+                encoder = std::make_unique<SoftwareEncoder>(width, height, device, textureFormat);
                 break;
             }
 #endif
