@@ -30,7 +30,7 @@ namespace webrtc
     IUnityGraphics* s_Graphics = nullptr;
     Context* s_context = nullptr;
 
-    DelegateNativeYUVCallback OnYUVFrameInternal;
+    volatile DelegateNativeYUVCallback OnYUVFrameInternal= nullptr;
     void* SyncContext = nullptr;
 
     std::map<const MediaStreamTrackInterface*, std::unique_ptr<IEncoder>> s_mapEncoder;
