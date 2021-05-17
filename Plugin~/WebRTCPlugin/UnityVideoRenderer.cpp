@@ -43,10 +43,10 @@ namespace unity {
             {
                 frame_buffer = frame_buffer->ToI420();
             }
-
+            if(m_id == 0)
             {
                 std::unique_lock<std::mutex> lock(frameId_mutex);
-                currentFrameId = (int)frame.ntp_time_ms();
+                currentFrameId = frame.ntp_time_ms(); 
             }
             SetFrameBuffer(frame_buffer);
         }
@@ -81,7 +81,7 @@ namespace unity {
         void UnityVideoRenderer::ConvertVideoFrameToTextureAndWriteToBuffer(int width, int height, webrtc::VideoType format, DelegateNativeYUVCallback OnYUVFrame, void* SyncContext)
         {
             auto frame = GetFrameBuffer();
-            int FrameId = 0;
+            int64_t FrameId = 0;
             std::unique_lock<std::mutex> lock(frameId_mutex);
             {
                 FrameId = currentFrameId;
@@ -116,7 +116,7 @@ namespace unity {
                 }
                 else
                 {
-                    (*OnYUVFrame)(SyncContext, Destination, width * height * 3 / 2, currentFrameId);
+                    (*OnYUVFrame)(SyncContext, Destination, width * height * 3 / 2, FrameId);
                  
                     if (Destination != nullptr)
                     {
@@ -127,7 +127,7 @@ namespace unity {
             }
 
 
-            DebugLog("Stride  %d  %d %d", i420_buffer->StrideY(), i420_buffer->StrideU(), i420_buffer->StrideV());
+           
             libyuv::ConvertFromI420(
                 i420_buffer->DataY(), i420_buffer->StrideY(), i420_buffer->DataU(),
                 i420_buffer->StrideU(), i420_buffer->DataV(), i420_buffer->StrideV(),

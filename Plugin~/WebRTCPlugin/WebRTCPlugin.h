@@ -19,7 +19,7 @@ namespace webrtc
     using DelegateMediaStreamOnRemoveTrack = void(*)(webrtc::MediaStreamInterface*, webrtc::MediaStreamTrackInterface*);
     using DelegateSetSessionDescSuccess = void(*)(PeerConnectionObject*);
     using DelegateSetSessionDescFailure = void(*)(PeerConnectionObject*, webrtc::RTCErrorType, const char*);
-    using DelegateNativeYUVCallback = void(*)(void* Ptr,const uint8_t* Data, int Size, int frameId);
+    using DelegateNativeYUVCallback = void(*)(void* Ptr,const uint8_t* Data, int Size, int64_t frameId);
     void debugLog(const char* buf);
     extern DelegateDebugLog delegateDebugLog;
 

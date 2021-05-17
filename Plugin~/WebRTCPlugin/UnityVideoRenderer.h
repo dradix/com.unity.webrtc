@@ -27,7 +27,7 @@ namespace webrtc {
         uint32_t m_id;
         std::mutex m_mutex;
         std::mutex frameId_mutex;
-        int currentFrameId = 0;
+        int64_t currentFrameId = 0;
         rtc::scoped_refptr<webrtc::VideoFrameBuffer> m_frameBuffer;
     };
 

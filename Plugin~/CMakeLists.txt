@@ -50,7 +50,7 @@ if(Windows)
 endif()
 
 if(Linux)
-  set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -D_DEBUG")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g3 -O0 -D_DEBUG")
 endif()
 # set iterator debug level
 if(Windows)
